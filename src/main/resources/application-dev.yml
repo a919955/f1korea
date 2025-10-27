@@ -1,0 +1,8 @@
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false   # 로컬 http 개발 편의 (확실하지 않음: 팀 정책에 맞춰 조정)
+spring:
+  profiles:
+    active: dev
