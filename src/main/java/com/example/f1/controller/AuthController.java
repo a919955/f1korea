@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
@@ -75,7 +76,7 @@ public class AuthController {
                 "username", authentication.getName()
             ));
             return ResponseEntity.ok(body);
-        } catch (RuntimeException ex) {
+        } catch (AuthenticationException ex) {
             Map<String, String> error = new HashMap<>();
             error.put("code", "UNAUTHORIZED");
             error.put("message", "잘못된 인증 정보");

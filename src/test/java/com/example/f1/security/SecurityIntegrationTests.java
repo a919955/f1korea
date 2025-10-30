@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -105,5 +106,39 @@ class SecurityIntegrationTests {
                 .with(csrf().asHeader()))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.code").value("UNAUTHORIZED"));
+    }
+
+    @Test
+    void logoutClearsSessionAndReturnsNoContent() throws Exception {
+        User user = new User();
+        user.setUsername("logout-user");
+        user.setEmail("logout@example.com");
+        user.setPassword(passwordEncoder.encode("password123"));
+        userRepository.save(user);
+
+        MvcResult loginResult = mockMvc.perform(post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("username", "logout-user")
+                .param("password", "password123")
+                .with(csrf().asHeader()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        MockHttpServletResponse loginResponse = loginResult.getResponse();
+        javax.servlet.http.Cookie sessionCookie = loginResponse.getCookie("SESSION");
+        assertThat(sessionCookie).isNotNull();
+        MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
+        assertThat(session).isNotNull();
+
+        MvcResult logoutResult = mockMvc.perform(post("/api/auth/logout")
+                .session(session)
+                .cookie(sessionCookie)
+                .with(csrf().asHeader()))
+            .andExpect(status().isNoContent())
+            .andReturn();
+
+        List<String> logoutCookies = logoutResult.getResponse().getHeaders("Set-Cookie");
+        assertThat(logoutCookies.stream().anyMatch(cookie -> cookie.startsWith("SESSION=") && cookie.contains("Max-Age=0")))
+            .isTrue();
     }
 }
