@@ -5,15 +5,10 @@ F1 Korea 커뮤니티 사이트의 Spring Boot 백엔드 API 서버입니다.
 
 ## 🚀 주요 기능
 
-### 🔐 인증 시스템 (의존성 추가 필요 가능성)
+### 🔐 인증 시스템
+- JWT 토큰 기반 인증
 - 회원가입/로그인
-- JWT 필터 체인을 세션 기반 SecurityConfig로 교체. 로그인 시 SESSION 및 XSRF-TOKEN 쿠키를 발급, 401/403 응답을 JSON 페이로드로 반환. 기존 인가 규칙은 유지하면서 CSRF 토큰 전파를 추가.
-- 인증 컨트롤러와 사용자 서비스를 재구성하여 HTTP 세션을 사용하는 폼-인코딩 로그인(form-encoded login)을 지원. CSRF 토큰 엔드포인트를 노출하고, JWT 유틸리티를 제거하여 비밀번호 기반 인증으로 전환.
-- 환경별 설정을 프로필 인지형(profile-aware) YAML 구성으로 외부화하고 Gradle 설정을 갱신. CSRF 발급, 세션 쿠키, 미인가 요청 처리(unauthorized handling)를 포괄하는 새로운 보안 회귀 테스트를 추가.
-
-### 위험요인(Risks)
-- 기존에 JWT 헤더에 의존하던 프런트엔드는 쿠키 기반 세션 처리로 마이그레이션해야 하며, 상태 변경 요청에는 X-XSRF-TOKEN 헤더를 포함해야 함.
-- 리버스 프록시 오구성 또는 HTTPS 강제 설정은 프로필 간 SameSite/Secure 쿠키 규칙에 영향을 줄 수 있음.
+- 비밀번호 암호화 (BCrypt)
 
 ### 📝 게시판 시스템
 - 게시글 CRUD (생성, 조회, 수정, 삭제)
@@ -123,7 +118,7 @@ spring.datasource.password=your_password
 
 ## 🔧 개발 환경
 
-- **IDE**: IntelliJ IDEA 또는 Eclipse
+- **IDE**: Eclipse
 - **JDK**: 17 이상
 - **MySQL**: 8.0 이상
 - **Gradle**: 7.0 이상

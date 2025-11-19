@@ -164,7 +164,7 @@ public class PostController {
                 request.getContent(), 
                 user, 
                 request.getPostType(),
-                request.getCategory()
+                request.getTags()
             );
             
             Map<String, Object> response = new HashMap<>();
@@ -242,45 +242,45 @@ public class PostController {
             return ResponseEntity.badRequest().body(error);
         }
     }
-
+    
     // Request DTO
     public static class PostRequest {
         private String title;
         private String content;
         private PostType postType = PostType.GENERAL;
-        private String category;
-
+        private String tags;
+        
         // Getters and Setters
         public String getTitle() {
             return title;
         }
-
+        
         public void setTitle(String title) {
             this.title = title;
         }
-
+        
         public String getContent() {
             return content;
         }
-
+        
         public void setContent(String content) {
             this.content = content;
         }
-
+        
         public PostType getPostType() {
             return postType;
         }
-
+        
         public void setPostType(PostType postType) {
             this.postType = postType;
         }
-
-        public String getCategory() {
-            return category;
+        
+        public String getTags() {
+            return tags;
         }
-
-        public void setCategory(String category) {
-            this.category = category;
+        
+        public void setTags(String tags) {
+            this.tags = tags;
         }
     }
 }

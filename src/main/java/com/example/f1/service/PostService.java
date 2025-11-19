@@ -37,13 +37,13 @@ public class PostService {
         return postRepository.findById(id);
     }
     
-    public Post createPost(String title, String content, User author, PostType postType, String category) {
+    public Post createPost(String title, String content, User author, PostType postType, String tags) {
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
         post.setAuthor(author);
         post.setPostType(postType);
-        post.setTags(category);
+        post.setTags(tags);
         
         return postRepository.save(post);
     }
